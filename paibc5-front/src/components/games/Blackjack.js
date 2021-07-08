@@ -4,7 +4,10 @@ import { TezosToolkit } from '@taquito/taquito';
 import { TempleWallet } from '@temple-wallet/dapp';
 import {
     Button,
-    Alert
+    Alert,
+    Container,
+    Row,
+    Col
 } from "reactstrap"
 const Blackjack = () => {
     const Tezos = new TezosToolkit('https://api.tez.ie/rpc/edonet');
@@ -34,13 +37,14 @@ const Blackjack = () => {
                     Tezos.wallet
                         .at('KT1AHz8XqbxKgxbzfvFH3DoVmh3SRgPEQ1qt')
                         .then((contract) =>{
-                            if (pkh === currentPlayer){
+                            contract.methods.newPlayer(1).send({ amount: bet })
+                            if (pkh === currentPlayer) {
                                 setMsg("You're participating")
                             }
-                            contract.methods.newPlayer(1).send({ amount: bet })
                         }
                         )
                         .then((op) => {
+                            setMsg(`Hash: ${op.opHash}`)
                             console.log(`Hash: ${op.opHash}`);
                             return op.confirmation();
                         })
@@ -80,6 +84,7 @@ const Blackjack = () => {
                             }
                         )
                         .then((op) => {
+                            setMsg(`Hash: ${op.opHash}`)
                             console.log(`Hash: ${op.opHash}`);
                             return op.confirmation();
                         })
@@ -120,14 +125,19 @@ const Blackjack = () => {
                     {msg}
                 </Alert>
             }
-            <h1>Play Blackjack</h1>
-            <div>The current bet amount is: {bet} Tz</div>
-            <Button onClick={newPlayer}>newPlayer</Button>
-            <Button onClick={play}>Play</Button>
-            {
-                playerHand &&
-                <h2>Final Score is : {playerHand}</h2>
-            }
+            <Container>
+                <Row>
+                    <Col className="text-center">
+                        <h1>Play Blackjack</h1>
+                        <div>The current bet amount is: {bet} Tz</div>
+                        <Button onClick={newPlayer}>newPlayer</Button>
+                        <Button onClick={play}>Play</Button>
+                        {
+                            playerHand && <h2>Final Score is : {playerHand}</h2>
+                        }
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 };

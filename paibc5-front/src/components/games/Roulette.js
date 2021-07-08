@@ -6,7 +6,10 @@ import {
     FormGroup,
     Label,
     Button,
-    Alert
+    Alert,
+    Container,
+    Row,
+    Col
 } from "reactstrap"
 import { TezosToolkit } from '@taquito/taquito';
 import { TempleWallet } from '@temple-wallet/dapp';
@@ -15,6 +18,7 @@ const Roulette = () => {
     const [bet, setBet] = useState(null);
     const [numberToBet, setNumberToBet] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
+    const [msg, setMsg] = useState("");
     const getStorage = async () => {
         const contract = await Tezos.contract.at("KT1DQo26G6o76sXa9dEQpPbo8xnWrfraVKb2");
         const storage = await contract.storage();
@@ -36,6 +40,7 @@ const Roulette = () => {
                             contract.methods.newPlayer(numberToBet).send({ amount: bet })
                         )
                         .then((op) => {
+                            setMsg(`Hash: ${op.opHash}`)
                             console.log(`Hash: ${op.opHash}`);
                             return op.confirmation();
                         })
@@ -70,11 +75,23 @@ const Roulette = () => {
                     {errorMsg}
                 </Alert>
             }
-            <h1>Bet for Roulette</h1>
-            <div>The current bet amount is: {bet} Tz</div>
-            <Label for="exampleAddress">Number to bet on:</Label>
-            <Input type="number" name="betNumber" id="betNumber" placeholder="Min amount: 1, Max amount: 50" onChange={e => setNumberToBet(e.target.value)}/>
-            <Button onClick={newPlayer}>Play</Button>
+            {
+                msg !== "" &&
+                <Alert color="info">
+                    {msg}
+                </Alert>
+            }
+            <Container>
+                <Row>
+                    <Col className="text-center">
+                        <h1>Bet for Roulette</h1>
+                        <div>The current bet amount is: {bet} Tz</div>
+                        <Label for="exampleAddress">Number to bet on:</Label>
+                        <Input type="number" name="betNumber" id="betNumber" placeholder="Min amount: 1, Max amount: 50" onChange={e => setNumberToBet(e.target.value)} />
+                        <Button onClick={newPlayer}>Play</Button>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 };

@@ -10,7 +10,9 @@ import {
     FormGroup,
     Label,
     Button,
-    Alert
+    Alert,
+    Row,
+    Col
 } from "reactstrap"
 const AdminRoulette = () => {
     const data = [
@@ -21,6 +23,7 @@ const AdminRoulette = () => {
     const [bet, setBet] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
     const [nbOfPlayers, setNbOfPlayers] = useState(null);
+    const [msg, setMsg] = useState("");
     const getStorage = async () => {
         const contract = await Tezos.contract.at("KT1DQo26G6o76sXa9dEQpPbo8xnWrfraVKb2");
         const storage = await contract.storage();
@@ -46,6 +49,7 @@ const AdminRoulette = () => {
                         }
                         )
                         .then((op) => {
+                            setMsg(`Hash: ${op.opHash}`)
                             console.log(`Hash: ${op.opHash}`);
                             return op.confirmation();
                         })
@@ -82,8 +86,20 @@ const AdminRoulette = () => {
                     {errorMsg}
                 </Alert>
             }
-            <h2>Current number of players is: {nbOfPlayers}</h2>
-            <Button onClick={closeGame}>Close Game</Button>
+            {
+                msg !== "" &&
+                <Alert color="info">
+                    {msg}
+                </Alert>
+            }
+            <Container>
+                <Row>
+                    <Col className="text-center">
+                        <h2>Current number of players is: {nbOfPlayers}</h2>
+                        <Button onClick={closeGame}>Close Game</Button>
+                    </Col>
+                </Row>
+            </Container>
         </Container>
     )
 }

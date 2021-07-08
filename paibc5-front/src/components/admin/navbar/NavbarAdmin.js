@@ -7,6 +7,10 @@ import {
     Nav,
     NavItem,
     NavLink,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem
 } from 'reactstrap';
 import {
     Link
@@ -20,27 +24,28 @@ const NavbarAdmin = () => {
     console.log(user);
     return (
         <Navbar color="light" light expand="md">
-            <NavbarBrand href="/">Casino</NavbarBrand>
+            <NavbarBrand href="/admin">Admin - Casino</NavbarBrand>
             <NavbarToggler onClick={toggle} />
             <Collapse isOpen={isOpen} navbar>
                 <Nav className="mr-auto" navbar>
                     {
                         isAuthenticated &&
-                        <NavItem>
-                            <NavLink href="/admin/roulette">Roulette</NavLink>
-                        </NavItem>
-                    }
-                    {
-                        isAuthenticated &&
-                        <NavItem>
-                            <NavLink href="/admin/lotto">Lotto</NavLink>
-                        </NavItem>
-                    }
-                    {
-                        isAuthenticated &&
-                        <NavItem>
-                            <NavLink href="/admin/blackjack">Blackjack</NavLink>
-                        </NavItem>
+                        <UncontrolledDropdown nav inNavbar>
+                            <DropdownToggle nav caret>
+                                Games
+                            </DropdownToggle>
+                            <DropdownMenu right>
+                                <DropdownItem>
+                                    <NavLink href="/admin/blackjack">Blackjack</NavLink>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <NavLink href="/admin/roulette">Roulette</NavLink>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <NavLink href="/admin/lotto">Lotto</NavLink>
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
                     }
                     <NavItem>
                         {isAuthenticated

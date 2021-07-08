@@ -7,7 +7,10 @@ import {
     FormGroup,
     Label,
     Button,
-    Alert
+    Alert,
+    Container,
+    Row,
+    Col
 } from "reactstrap"
 import NavbarAdmin from '../navbar/NavbarAdmin';
 const Blackjack = ({ number, suit }) => {
@@ -17,6 +20,7 @@ const Blackjack = ({ number, suit }) => {
     const [balance, setBalance] = useState(null);
     const [amountToWithdraw, setAmountToWithdraw] = useState(null);
     const [currentPlayer, setCurrentPlayer] = useState("");
+    const [msg, setMsg] = useState("");
     const cards =
     [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
@@ -76,6 +80,7 @@ const Blackjack = ({ number, suit }) => {
                             contract.methods.cardPack(shuffle()).send()
                         )
                         .then((op) => {
+                            setMsg(`Hash: ${op.opHash}`)
                             console.log(`Hash: ${op.opHash}`);
                             return op.confirmation();
                         })
@@ -114,6 +119,7 @@ const Blackjack = ({ number, suit }) => {
                             }
                         )
                         .then((op) => {
+                            setMsg(`Hash: ${op.opHash}`)
                             console.log(`Hash: ${op.opHash}`);
                             return op.confirmation();
                         })
@@ -151,14 +157,26 @@ const Blackjack = ({ number, suit }) => {
                     {errorMsg}
                 </Alert>
             }
-            <h1>Setup Blackjack</h1>
-            <div>The current bet amount is : {bet} Tz</div>
-            <div>The current player is : {currentPlayer}</div>
-            <Button onClick={cardPack}>Generate Game</Button>
-            <div>The current balance is : {balance}</div>
-            <Label for="exampleAddress">Amount to withdraw in Mutez:</Label>
-            <Input type="text" name="amount" id="amountToBet" onChange={e => handleWithdraw(e.target.value)}/>
-            <Button onClick={withdraw}>Withdraw</Button>
+            {
+                msg !== "" &&
+                <Alert color="info">
+                    {msg}
+                </Alert>
+            }
+            <Container>
+                <Row>
+                    <Col className="text-center">
+                        <h1>Setup Blackjack</h1>
+                        <div>The current bet amount is : {bet} Tz</div>
+                        <div>The current player is : {currentPlayer}</div>
+                        <Button onClick={cardPack}>Generate Game</Button>
+                        <div>The current balance is : {balance}</div>
+                        <Label for="exampleAddress">Amount to withdraw in Mutez:</Label>
+                        <Input type="text" name="amount" id="amountToBet" onChange={e => handleWithdraw(e.target.value)} />
+                        <Button onClick={withdraw}>Withdraw</Button>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 };

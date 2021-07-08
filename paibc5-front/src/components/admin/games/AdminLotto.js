@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Container } from 'reactstrap'
 import NavbarAdmin from '../navbar/NavbarAdmin';
 import { TezosToolkit } from '@taquito/taquito';
 import { TempleWallet } from '@temple-wallet/dapp';
 import {
-    Form,
-    Input,
-    FormGroup,
-    Label,
     Button,
-    Alert
+    Alert,
+    Row,
+    Col,
+    Container
 } from "reactstrap"
 const AdminLotto = () => {
     const [randomLotto, setRandomLotto] = useState(1);
@@ -17,6 +15,7 @@ const AdminLotto = () => {
     const [bet, setBet] = useState(null);
     const [numberToBet, setNumberToBet] = useState(null);
     const [errorMsg, setErrorMsg] = useState("");
+    const [msg, setMsg] = useState("");
     const getStorage = async () => {
         const contract = await Tezos.contract.at("KT1L3XfPcEovqyXVN6G31BBm5d7rQ4D7J4Hd");
         const storage = await contract.storage();
@@ -38,6 +37,7 @@ const AdminLotto = () => {
                             contract.methods.endGame(randomLotto).send()
                         )
                         .then((op) => {
+                            setMsg(`Hash: ${op.opHash}`)
                             console.log(`Hash: ${op.opHash}`);
                             return op.confirmation();
                         })
@@ -58,7 +58,10 @@ const AdminLotto = () => {
                         });
                 });
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                setErrorMsg(err.message);
+                console.log(err)
+            });
     }
     useEffect(() => {
         getStorage()
@@ -74,10 +77,22 @@ const AdminLotto = () => {
                     {errorMsg}
                 </Alert>
             }
-            <Button onClick={endGame}>Close Game</Button>
-            <h2>
-                Winning number is: {randomLotto}
-            </h2>
+            {
+                msg !== "" &&
+                <Alert color="info">
+                    {msg}
+                </Alert>
+            }
+            <Container>
+                <Row>
+                    <Col className="text-center">
+                        <Button onClick={endGame}>Close Game</Button>
+                        <h2>
+                            Winning number is: {randomLotto}
+                        </h2>
+                    </Col>
+                </Row>
+            </Container>
         </Container>
     )
 }
